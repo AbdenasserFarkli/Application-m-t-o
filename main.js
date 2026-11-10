@@ -44,6 +44,7 @@ const parentsbutton = document.getElementById("results")
 
 
 try {
+    await new Promise(resolve => setTimeout(resolve, 2000));
     const res=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`)
     const data = await res.json()
     console.log(data);
@@ -59,6 +60,7 @@ p.style.textAlign = "center";
                 parentsbutton.appendChild(p)
                 
             }else{data.results.forEach(city => {
+                
         const button = document.createElement("button")
         button.textContent=`${city.name} - ${city.country}`
         button.classList.add(
@@ -76,6 +78,11 @@ p.style.textAlign = "center";
     "transition"
 );
         parentsbutton.appendChild(button)
+        button.addEventListener("click",(e)=>{
+            e.preventDefault()
+            getdata(city.latitude,city.longitude,city.name)
+
+        })
 
     });
     }
@@ -83,6 +90,7 @@ p.style.textAlign = "center";
     console.error(error)
     
 }finally{
+
     spinner.classList.add("hidden");
 
 }
@@ -92,3 +100,57 @@ document.getElementById("search-btn").addEventListener("click",(e)=>{
     getdatata(inputserch.value.trim())
 
 })
+const City=document.getElementById("city-name")
+const date=document.getElementById("date")
+const temperature=document.getElementById("temperature")
+const description=document.getElementById("description")
+const humidity=document.getElementById("humidity")
+const wind=document.getElementById("wind")
+
+
+
+
+
+
+async function getdata(latitude,longitude,city) {
+    spinner.classList.remove("hidden");
+            parentsbutton.textContent=""
+
+    try {
+        console.log("getdata started");
+console.log(spinner.classList);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+        const url = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
+        const data = await url.json()
+
+        console.log(data);
+        City.textContent = city;
+
+temperature.textContent = data.current.temperature_2m ;
+
+humidity.textContent = data.current.relative_humidity_2m + " %";
+
+wind.textContent = data.current.wind_speed_10m + " km/h";
+description.textContent
+
+date.textContent = new Date(data.current.time).toLocaleDateString("fr-FR", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+});
+        
+
+    } catch (error) {
+            console.error(error)
+
+    }finally{
+
+        spinner.classList.remove("hidden");
+
+}}
+
+
+
+ 
