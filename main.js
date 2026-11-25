@@ -37,9 +37,6 @@ async function getdatata(city) {
     try {
         const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`)
         if (!res.ok) {
-            const rety = document.getElementById("retry-btn")
-            rety.classList.remove("hidden")
-
             throw new Error(`some thing worng :  ${res.status}`);
         }
         const data = await res.json()
@@ -86,7 +83,7 @@ async function getdatata(city) {
     } catch (error) {
 
         console.error(error.message);
-        rety = document.getElementById("retry-btn")
+        rety.classList.remove("hidden");
 
 
         const p = document.createElement("p");
